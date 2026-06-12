@@ -5,18 +5,57 @@ import { env } from "@/lib/env";
 import { logger } from "@/server/utils/logger";
 import { AppError } from "@/server/utils/error";
 
+type StorageDriver = "s3" | "supabase";
+
+function isStorageBrowser(): boolean {
+  return env.PDF_STORAGE_DRIVER === "s3" || env.PDF_STORAGE_DRIVER === "supabase";
+}
+
+function buildS3Client() {
+  const { S3Client } = require("@aws-sdk/client-s3");
+  const driver = env.PDF_STORAGE_DRIVER as StorageDriver;
+
+  if (driver === "supabase") {
+    return new S3Client({
+      region: env.SUPABASE_STORAGE_REGION || "ap-southeast-1",
+      endpoint: env.SUPABASE_STORAGE_URL,
+      credentials: {
+        accessKeyId: env.SUPABASE_STORAGE_KEY,
+        secretAccessKey: env.SUPABASE_STORAGE_SECRET,
+      },
+      forcePathStyle: true,
+    });
+  }
+
+  return new S3Client({
+    region: env.S3_REGION || "auto",
+    endpoint: env.S3_ENDPOINT || undefined,
+    credentials: {
+      accessKeyId: env.S3_ACCESS_KEY_ID,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    },
+    forcePathStyle: true,
+  });
+}
+
+function activeBucket(): string {
+  return env.PDF_STORAGE_DRIVER === "supabase"
+    ? env.SUPABASE_STORAGE_BUCKET || env.S3_BUCKET
+    : env.S3_BUCKET;
+}
+
 /**
  * GET /api/admin/storage?from=2025-01-01&to=2025-03-31&prefix=pdfs/
  *
- * List all files in R2/S3 storage. Only available in production (S3 driver).
+ * List all files in cloud storage. Available for S3/R2 and Supabase drivers.
  * Returns file name, size, lastModified, and key.
  */
 export async function GET(req: NextRequest) {
   try {
     await requireSuperadmin();
 
-    if (env.PDF_STORAGE_DRIVER !== "s3") {
-      return fail("Storage browser hanya tersedia untuk S3/R2 driver", 400);
+    if (!isStorageBrowser()) {
+      return fail("Storage browser hanya tersedia untuk S3/R2 atau Supabase driver", 400);
     }
 
     const { searchParams } = req.nextUrl;
@@ -24,17 +63,8 @@ export async function GET(req: NextRequest) {
     const to = searchParams.get("to");
     const prefix = searchParams.get("prefix") || "pdfs/";
 
-    const { S3Client, ListObjectsV2Command } = await import("@aws-sdk/client-s3");
-
-    const client = new S3Client({
-      region: env.S3_REGION || "auto",
-      endpoint: env.S3_ENDPOINT || undefined,
-      credentials: {
-        accessKeyId: env.S3_ACCESS_KEY_ID,
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY,
-      },
-      forcePathStyle: true,
-    });
+    const { ListObjectsV2Command } = await import("@aws-sdk/client-s3");
+    const client = buildS3Client();
 
     const files: Array<{
       key: string;
@@ -49,7 +79,7 @@ export async function GET(req: NextRequest) {
 
     while (hasMore) {
       const command = new ListObjectsV2Command({
-        Bucket: env.S3_BUCKET,
+        Bucket: activeBucket(),
         Prefix: prefix,
         ContinuationToken: continuationToken,
         MaxKeys: 1000,
@@ -61,7 +91,6 @@ export async function GET(req: NextRequest) {
       for (const obj of contents) {
         if (!obj.Key || !obj.LastModified) continue;
 
-        // Apply date filter
         const modified = obj.LastModified;
         if (from && modified < new Date(from)) continue;
         if (to && modified > new Date(to + "T23:59:59.999Z")) continue;
@@ -83,7 +112,6 @@ export async function GET(req: NextRequest) {
       hasMore = Boolean(response.IsTruncated && continuationToken);
     }
 
-    // Sort by lastModified descending (newest first)
     files.sort((a, b) => new Date(b.lastModified).getTime() - new Date(a.lastModified).getTime());
 
     return ok({ files, total: files.length });
@@ -98,14 +126,14 @@ export async function GET(req: NextRequest) {
  * DELETE /api/admin/storage
  * Body: { keys: string[] }
  *
- * Delete one or more files from R2/S3 storage.
+ * Delete one or more files from cloud storage.
  */
 export async function DELETE(req: NextRequest) {
   try {
     await requireSuperadmin();
 
-    if (env.PDF_STORAGE_DRIVER !== "s3") {
-      return fail("Storage management hanya tersedia untuk S3/R2 driver", 400);
+    if (!isStorageBrowser()) {
+      return fail("Storage management hanya tersedia untuk S3/R2 atau Supabase driver", 400);
     }
 
     const body = await req.json().catch(() => ({}));
@@ -119,20 +147,11 @@ export async function DELETE(req: NextRequest) {
       return fail("Maksimal 100 file per request", 400);
     }
 
-    const { S3Client, DeleteObjectsCommand } = await import("@aws-sdk/client-s3");
-
-    const client = new S3Client({
-      region: env.S3_REGION || "auto",
-      endpoint: env.S3_ENDPOINT || undefined,
-      credentials: {
-        accessKeyId: env.S3_ACCESS_KEY_ID,
-        secretAccessKey: env.S3_SECRET_ACCESS_KEY,
-      },
-      forcePathStyle: true,
-    });
+    const { DeleteObjectsCommand } = await import("@aws-sdk/client-s3");
+    const client = buildS3Client();
 
     const command = new DeleteObjectsCommand({
-      Bucket: env.S3_BUCKET,
+      Bucket: activeBucket(),
       Delete: {
         Objects: keys.map((key) => ({ Key: key })),
         Quiet: true,
@@ -147,8 +166,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     const deletedCount = keys.length - errors.length;
-
-    logger.info(`[storage] Deleted ${deletedCount}/${keys.length} files from R2`);
+    logger.info(`[storage] Deleted ${deletedCount}/${keys.length} files`);
 
     return ok(
       { deleted: deletedCount, errors: errors.length },

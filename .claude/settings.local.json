@@ -6,7 +6,12 @@
       "Bash(grep -r \"\\\\/logo\\\\|\\\\/favicon\\\\|\\\\/icon\\\\|\\\\/apple\" \"d:\\\\juruscope\\\\src\" --include=\"*.tsx\" --include=\"*.ts\")",
       "Bash(npx tsx *)",
       "PowerShell(npx tsx scripts/generate-logos.ts)",
-      "PowerShell(npx tsc --noEmit --project tsconfig.json 2>&1)"
+      "PowerShell(npx tsc --noEmit --project tsconfig.json 2>&1)",
+      "PowerShell(Get-ChildItem -Force \"d:\\\\juruscope\" | Select-Object Name, @{Name=\"Type\"; Expression={if \\($_.PSIsContainer\\) { \"Folder\" } else { \"File\" }}} | Format-Table -AutoSize)",
+      "Bash(New-Item -ItemType Directory -Force \"d:\\\\juruscope\\\\src\\\\app\\\\api\\\\admin\\\\storage-test\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Output \"dir created\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"d:\\\\juruscope\\\\src\\\\app\\\\api\\\\admin\\\\storage-test\")"
     ]
   }
 }

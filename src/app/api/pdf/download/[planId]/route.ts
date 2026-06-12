@@ -3,6 +3,7 @@ import { fail } from "@/server/utils/api-response";
 import { prisma } from "@/lib/prisma";
 import { logger } from "@/server/utils/logger";
 import { generatePdfForPlan } from "@/server/pdf/pdf.service";
+import { fetchFromSupabase } from "@/server/pdf/storage.service";
 import { env } from "@/lib/env";
 import path from "node:path";
 import { promises as fs } from "node:fs";
@@ -73,6 +74,20 @@ export async function GET(
     // Handle s3:// URLs — fetch from S3/R2 and stream to user
     if (pdfUrl.startsWith("s3://")) {
       const fileBuffer = await fetchFromS3(pdfUrl);
+      return new Response(new Uint8Array(fileBuffer), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="${downloadName}"`,
+          "Content-Length": String(fileBuffer.length),
+          "Cache-Control": "private, max-age=3600",
+        },
+      });
+    }
+
+    // Handle supabase:// URLs — fetch from Supabase Storage and stream to user
+    if (pdfUrl.startsWith("supabase://")) {
+      const fileBuffer = await fetchFromSupabase(pdfUrl);
       return new Response(new Uint8Array(fileBuffer), {
         status: 200,
         headers: {

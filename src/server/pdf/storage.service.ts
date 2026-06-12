@@ -13,6 +13,7 @@ export type StoredFile = {
  * Store a PDF file. Supports:
  * - "local": writes to /public/generated-pdfs (dev only, not for Vercel)
  * - "s3": uploads to S3-compatible storage (Cloudflare R2, AWS S3, MinIO)
+ * - "supabase": uploads to Supabase Storage via its S3-compatible API
  */
 export async function storePdf(
   fileName: string,
@@ -24,6 +25,10 @@ export async function storePdf(
 
   if (driver === "s3") {
     return storeToS3(fileName, data);
+  }
+
+  if (driver === "supabase") {
+    return storeToSupabase(fileName, data);
   }
 
   if (driver === "local") {
@@ -88,15 +93,106 @@ async function storeToS3(fileName: string, data: Buffer): Promise<StoredFile> {
     throw err;
   }
 
-  // Build the stored URL.
-  // For the download route, we store the key path and let the download
-  // endpoint handle serving (either redirect to public URL or stream from S3).
-  // This avoids exposing the raw S3 endpoint to users.
-  const storedUrl = `s3://${env.S3_BUCKET}/${key}`;
-
   return {
-    url: storedUrl,
+    url: `s3://${env.S3_BUCKET}/${key}`,
     driver: "s3",
     key,
   };
+}
+
+// ─── Supabase Storage driver ─────────────────────────────────────────────
+// Uses Supabase's S3-compatible API endpoint so no extra SDK is needed.
+
+async function storeToSupabase(
+  fileName: string,
+  data: Buffer
+): Promise<StoredFile> {
+  const { S3Client, PutObjectCommand } = await import("@aws-sdk/client-s3");
+
+  if (!env.SUPABASE_STORAGE_URL) {
+    throw new Error("SUPABASE_STORAGE_URL is required for Supabase storage driver");
+  }
+  if (!env.SUPABASE_STORAGE_KEY) {
+    throw new Error("SUPABASE_STORAGE_KEY is required for Supabase storage driver");
+  }
+  if (!env.SUPABASE_STORAGE_SECRET) {
+    throw new Error("SUPABASE_STORAGE_SECRET is required for Supabase storage driver");
+  }
+
+  const bucket = env.SUPABASE_STORAGE_BUCKET || env.S3_BUCKET;
+  if (!bucket) {
+    throw new Error("SUPABASE_STORAGE_BUCKET (or S3_BUCKET) is required for Supabase storage driver");
+  }
+
+  const client = new S3Client({
+    region: env.SUPABASE_STORAGE_REGION || "ap-southeast-1",
+    endpoint: env.SUPABASE_STORAGE_URL,
+    credentials: {
+      accessKeyId: env.SUPABASE_STORAGE_KEY,
+      secretAccessKey: env.SUPABASE_STORAGE_SECRET,
+    },
+    forcePathStyle: true,
+  });
+
+  const key = `pdfs/${fileName}`;
+
+  const command = new PutObjectCommand({
+    Bucket: bucket,
+    Key: key,
+    Body: data,
+    ContentType: "application/pdf",
+    ContentDisposition: `attachment; filename="${fileName}"`,
+  });
+
+  try {
+    await client.send(command);
+    logger.info(
+      `[storage] PDF uploaded to Supabase Storage: ${bucket}/${key} (${data.length} bytes)`
+    );
+  } catch (err) {
+    logger.error("[storage] Supabase Storage upload failed", err);
+    throw err;
+  }
+
+  return {
+    url: `supabase://${bucket}/${key}`,
+    driver: "supabase",
+    key,
+  };
+}
+
+// ─── Supabase fetch helper (used by download route) ──────────────────────
+
+export async function fetchFromSupabase(supabaseUrl: string): Promise<Buffer> {
+  const { S3Client, GetObjectCommand } = await import("@aws-sdk/client-s3");
+
+  // Parse supabase://bucket/key
+  const withoutProtocol = supabaseUrl.replace("supabase://", "");
+  const slashIndex = withoutProtocol.indexOf("/");
+  const bucket = withoutProtocol.slice(0, slashIndex);
+  const key = withoutProtocol.slice(slashIndex + 1);
+
+  const client = new S3Client({
+    region: env.SUPABASE_STORAGE_REGION || "ap-southeast-1",
+    endpoint: env.SUPABASE_STORAGE_URL,
+    credentials: {
+      accessKeyId: env.SUPABASE_STORAGE_KEY,
+      secretAccessKey: env.SUPABASE_STORAGE_SECRET,
+    },
+    forcePathStyle: true,
+  });
+
+  const command = new GetObjectCommand({ Bucket: bucket, Key: key });
+  const response = await client.send(command);
+
+  if (!response.Body) {
+    throw new Error(`Supabase Storage returned empty body for ${supabaseUrl}`);
+  }
+
+  const chunks: Uint8Array[] = [];
+  const stream = response.Body as AsyncIterable<Uint8Array>;
+  for await (const chunk of stream) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
 }
