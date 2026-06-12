@@ -11,7 +11,9 @@
       "Bash(New-Item -ItemType Directory -Force \"d:\\\\juruscope\\\\src\\\\app\\\\api\\\\admin\\\\storage-test\")",
       "Bash(Out-Null)",
       "Bash(Write-Output \"dir created\")",
-      "PowerShell(New-Item -ItemType Directory -Force \"d:\\\\juruscope\\\\src\\\\app\\\\api\\\\admin\\\\storage-test\")"
+      "PowerShell(New-Item -ItemType Directory -Force \"d:\\\\juruscope\\\\src\\\\app\\\\api\\\\admin\\\\storage-test\")",
+      "Bash(Select-Object FullName)",
+      "Bash(xargs grep -l \"mockPersonality\\\\|mockReport\")"
     ]
   }
 }

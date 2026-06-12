@@ -36,12 +36,23 @@ export async function generateRecommendations(
     try {
       return await openaiPersonality(args, config.recommendationModel);
     } catch (err) {
-      logger.error(
-        "OpenAI personality generation failed, falling back to mock",
-        err
-      );
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(`[AI] openaiPersonality failed — ${msg}`, {
+        model: config.recommendationModel,
+        provider: config.recommendationProvider,
+      });
+      // In production, surface the error rather than silently showing mock data.
+      // In development, fall back to mock so devs without an API key can still test.
+      if (env.NODE_ENV === "production") throw err;
       return mockPersonality(args);
     }
+  }
+
+  if (env.NODE_ENV === "production") {
+    throw new Error(
+      `AI provider '${config.recommendationProvider}' is not configured. ` +
+        "Set OPENAI_API_KEY and AI_PROVIDER=openai in production environment variables."
+    );
   }
   return mockPersonality(args);
 }
@@ -58,9 +69,20 @@ export async function generateBusinessPlan(
     try {
       return await openaiReport(args, config.planModel);
     } catch (err) {
-      logger.error("OpenAI report generation failed, falling back to mock", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.error(`[AI] openaiReport failed — ${msg}`, {
+        model: config.planModel,
+        provider: config.planProvider,
+      });
+      if (env.NODE_ENV === "production") throw err;
       return mockReport(args);
     }
+  }
+
+  if (env.NODE_ENV === "production") {
+    throw new Error(
+      `AI provider '${config.planProvider}' is not configured for plan generation.`
+    );
   }
   return mockReport(args);
 }
@@ -106,8 +128,11 @@ async function openaiPersonality(
         .join(". ") || "Tidak ada catatan tambahan."
     );
 
-  const isReasoningModel =
-    model.startsWith("gpt-5") && !model.includes("mini") && !model.includes(".");
+  // Only OpenAI o-series (o1, o3, o4, o4-mini …) are "reasoning" models —
+  // they require no response_format and use max_completion_tokens differently.
+  // GPT-series (gpt-4o, gpt-5, gpt-5-mini) are standard chat models and MUST
+  // use response_format: json_object to guarantee clean JSON output.
+  const isReasoningModel = /^o\d/i.test(model);
 
   const createParams: Record<string, unknown> = {
     model,
@@ -170,8 +195,8 @@ async function openaiReport(
     userInput: args.userInput,
   });
 
-  const isReasoningModel =
-    model.startsWith("gpt-5") && !model.includes("mini") && !model.includes(".");
+  // Same reasoning-model rule as openaiPersonality: only o-series qualifies.
+  const isReasoningModel = /^o\d/i.test(model);
 
   const createParams: Record<string, unknown> = {
     model,

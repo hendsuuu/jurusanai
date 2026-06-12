@@ -48,11 +48,16 @@ export async function createRecommendation(
   const cached = await cacheGet<CachedAiResult>(cacheKey);
 
   let aiResult: CachedAiResult;
+  let resultSource: "cache" | "openai" | "mock" = "openai";
+
   if (cached) {
     logger.info(`[personality] cache hit (${cacheKey})`);
     aiResult = cached;
+    resultSource = "cache";
   } else {
     aiResult = await generateRecommendations({ userInput });
+    // In dev without a real API key, generateRecommendations returns mock data.
+    // We cache it anyway so repeated dev submissions are fast, but we flag the source.
     cacheSet(cacheKey, aiResult, RECOMMENDATION_CACHE_TTL_SECONDS).catch(() => {});
   }
 
@@ -70,8 +75,8 @@ export async function createRecommendation(
       decisionStyle: input.marginPreference,
       identityTraits: input.assets,
       status: "RECOMMENDED",
-      // Personality teaser (free result) lives in personalityJson.
       personalityJson: aiResult as unknown as object,
+      metaJson: { source: resultSource, generatedAt: new Date().toISOString() },
     },
   });
 
@@ -83,9 +88,9 @@ export async function createRecommendation(
       ipAddress: meta?.ipAddress,
       userAgent: meta?.userAgent,
       metadata: {
-        source: "ai-generated",
+        source: resultSource,
         personalityTitle: aiResult.result.personalityTitle,
-        cacheHit: Boolean(cached),
+        cacheHit: resultSource === "cache",
       },
     },
   });
