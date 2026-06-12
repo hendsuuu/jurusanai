@@ -1,0 +1,12 @@
+# BisnisApa.id Robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /payment/
+Disallow: /planner/recommendations
+Disallow: /planner/preview/
+
+# Sitemap
+Sitemap: https://bisnisapa.id/sitemap.xml

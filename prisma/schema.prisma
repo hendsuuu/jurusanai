@@ -1,0 +1,318 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  SUPERADMIN
+}
+
+enum DiscoveryStatus {
+  DRAFT
+  RECOMMENDED
+  SELECTED
+  GENERATED
+  PAID
+  GENERATING
+  PDF_READY
+  FAILED
+}
+
+enum OrderStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  EXPIRED
+  CANCELED
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}
+
+enum PaymentProvider {
+  MIDTRANS
+}
+
+enum PackageType {
+  BASIC
+  PRO
+  PREMIUM
+}
+
+enum AuditAction {
+  LOGIN
+  LOGOUT
+  CREATE_RECOMMENDATION
+  SELECT_PERSONALITY
+  GENERATE_REPORT
+  CREATE_ORDER
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  PAYMENT_EXPIRED
+  PAYMENT_CANCELED
+  GENERATE_PDF
+  REGENERATE_PDF_BY_ADMIN
+  DOWNLOAD_PDF
+  EMAIL_SENT
+  EMAIL_FAILED
+  EMAIL_RESEND
+  ADMIN_VIEW_ORDER
+  ADMIN_UPDATE_ORDER
+  ADMIN_CHANGE_PASSWORD
+  STORAGE_DELETE
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  passwordHash String?
+  role         UserRole @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  plans     DiscoveryResult[]
+  orders    Order[]
+  auditLogs AuditLog[]
+}
+
+model DiscoveryResult {
+  id     String  @id @default(cuid())
+  userId String?
+
+  // Student identity
+  studentName  String?
+  studentEmail String?
+  age          String?
+  grade        String?
+  school       String?
+
+  // Quiz answers (behavior-based, mapped from the 50-question flow)
+  interestArea    String
+  dailyEnergy     String
+  futureLifestyle String
+  workStyle       String?
+  naturalBehavior String?
+  motivation      String?
+  socialStyle     String?
+  decisionStyle   String?
+  identityTraits  String[]
+
+  // Resolved personality identity
+  personalityId    String?
+  personalityTitle String?
+
+  // AI output payloads
+  personalityJson Json? // FREE teaser: identity + traits + top jurusan
+  metaJson        Json? // generation metadata
+  reportJson      Json? // PAID full self discovery report
+
+  pdfUrl String?
+  status DiscoveryStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  orders Order[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Order {
+  id        String @id @default(cuid())
+  orderCode String @unique
+
+  userId            String?
+  discoveryResultId String
+
+  customerName  String?
+  customerEmail String?
+  customerPhone String?
+
+  packageType PackageType
+  amount      Int
+  currency    String          @default("IDR")
+  status      OrderStatus     @default(PENDING)
+
+  paymentProvider   PaymentProvider @default(MIDTRANS)
+  paymentToken      String?
+  paymentUrl        String?
+  providerReference String?
+
+  rawPaymentRequest  Json?
+  rawPaymentResponse Json?
+  rawWebhookPayload  Json?
+
+  paidAt    DateTime?
+  expiredAt DateTime?
+
+  // Email delivery tracking — report PDF dikirim ke customerEmail setelah PDF_READY.
+  emailStatus    EmailStatus?
+  emailSentAt    DateTime?
+  emailMessageId String?
+  emailError     String?
+  emailAttempts  Int          @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  discoveryResult DiscoveryResult @relation(fields: [discoveryResultId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([discoveryResultId])
+  @@index([customerEmail])
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  userId     String?
+  action     AuditAction
+  entityType String?
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([createdAt])
+  @@index([entityType, entityId])
+}
+
+model RateLimitLog {
+  id        String   @id @default(cuid())
+  key       String
+  route     String
+  ipAddress String?
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([key])
+  @@index([route])
+  @@index([createdAt])
+}
+
+// ─── Support Tickets ─────────────────────────────────────────────────────
+
+enum SupportTicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_USER
+  RESOLVED
+  CLOSED
+  SPAM
+}
+
+enum SupportTicketPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SupportTicketSource {
+  EMAIL
+  DASHBOARD
+  SYSTEM
+}
+
+enum SupportTicketSenderType {
+  USER
+  ADMIN
+  SYSTEM
+}
+
+model SupportTicket {
+  id            String @id @default(cuid())
+  ticketNumber  String @unique
+
+  fromEmail     String
+  fromName      String?
+  toEmail       String
+
+  subject       String
+  messageText   String?
+  messageHtml   String?
+
+  status        SupportTicketStatus   @default(OPEN)
+  priority      SupportTicketPriority @default(NORMAL)
+  source        SupportTicketSource   @default(EMAIL)
+
+  userId        String?
+  orderId       String?
+
+  assignedAdminId String?
+
+  resendEmailId String? @unique
+
+  firstResponseAt DateTime?
+  resolvedAt      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  replies SupportTicketReply[]
+
+  @@index([fromEmail])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+}
+
+model SupportTicketReply {
+  id              String @id @default(cuid())
+  supportTicketId String
+
+  senderType  SupportTicketSenderType
+  senderEmail String?
+  senderName  String?
+
+  messageText String?
+  messageHtml String?
+
+  createdAt DateTime @default(now())
+
+  ticket SupportTicket @relation(fields: [supportTicketId], references: [id], onDelete: Cascade)
+
+  @@index([supportTicketId])
+}
+
+// ─── App Settings (admin-configurable) ───────────────────────────────────
+
+model AppSettings {
+  id    String @id @default("singleton")
+  
+  // Pricing
+  priceBasic       Int    @default(49000)
+  pricePremium     Int    @default(99000)
+  promoPercentage  Int    @default(0)  // 0 = no promo, 10 = 10% off
+
+  // AI Config — Recommendations
+  aiRecommendationProvider String @default("openai")  // openai | gemini | mock
+  aiRecommendationModel    String @default("gpt-5.4-mini")
+
+  // AI Config — Business Plan Generation
+  aiPlanProvider String @default("openai")  // openai | gemini | mock
+  aiPlanModel    String @default("gpt-5.4-mini")
+
+  // System
+  auditLogEnabled Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+}

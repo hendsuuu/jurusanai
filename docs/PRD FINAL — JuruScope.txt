@@ -1,0 +1,822 @@
+PRD FINAL — JuruScope
+AI Self Discovery Platform untuk Membantu Gen Z Menentukan Jurusan & Arah Masa Depan
+1. Product Overview
+Product Name
+JuruScope
+Tagline
+
+“Kenali dirimu sebelum menentukan masa depan.”
+
+Product Summary
+
+JuruScope adalah platform AI self discovery yang membantu siswa SMA memahami:
+
+potensi diri
+pola berpikir
+gaya kerja
+minat alami
+lifestyle ideal
+dan arah jurusan yang paling cocok
+
+melalui pengalaman quiz interaktif modern yang terasa personal, ringan, dan relatable.
+
+Produk ini bukan psikotes formal.
+
+Tetapi:
+
+experience untuk mengenal diri sendiri sebelum menentukan masa depan.
+2. Core Problem
+
+Banyak siswa:
+
+bingung memilih jurusan
+takut salah masa depan
+ikut teman
+ikut orang tua
+tidak mengenal dirinya sendiri
+
+Akibatnya:
+
+salah jurusan
+kehilangan motivasi
+pindah jurusan
+stres akademik
+kerja tidak sesuai passion
+3. Core Solution
+
+JuruScope membantu user:
+
+“lebih memahami dirinya sebelum memilih arah hidup.”
+
+Platform menggunakan:
+
+pertanyaan behavior based
+personality mapping
+AI summary generation
+emotional report system
+
+untuk menghasilkan:
+
+rekomendasi jurusan
+future identity
+career direction
+lifestyle compatibility
+4. Core Product Philosophy
+Produk ini menjual:
+curiosity.
+
+User penasaran:
+
+“gue sebenarnya cocok jadi apa?”
+“kenapa gue punya sifat kayak gini?”
+“masa depan gue bakal seperti apa?”
+“jurusan apa yang paling relate sama gue?”
+
+Dan rasa penasaran itu menjadi engine utama engagement & conversion.
+
+5. Product Positioning
+Bukan:
+
+“Tes jurusan formal”
+
+Tetapi:
+“AI Self Discovery Platform untuk Gen Z.”
+6. Target Market
+Primary Market
+
+Siswa SMA kelas 10–12
+
+Secondary Market
+Gap year
+Orang tua
+Initial Market
+
+Indonesia
+
+Future Expansion
+
+Global market
+
+7. Main Goals
+Business Goal
+
+Membangun produk digital:
+
+scalable
+viral
+emotional
+monetizable
+easy to use
+User Goal
+
+Membantu user:
+
+memahami dirinya
+merasa lebih yakin
+mengurangi rasa takut salah jurusan
+8. Success Metrics (MVP)
+Metric	Target
+User pertama	1.000+
+Completion rate	>70%
+Premium conversion	>15%
+Share rate	>20%
+Repeat visit	>15%
+9. UX Direction
+UX Goals
+
+User harus merasa:
+
+nyaman menjawab
+penasaran melanjutkan
+relate dengan pertanyaan
+tidak sedang mengerjakan tes formal
+10. UI Direction
+Design Style
+Modern Minimal Focus UI
+Visual Characteristics
+clean
+whitespace banyak
+rounded card
+soft shadow
+smooth animation
+mobile first
+aesthetic Gen Z
+Color Direction
+putih soft
+abu modern
+hitam soft
+accent biru gelap / ungu soft
+11. Main User Flow
+Step 1 — Landing Page
+
+Headline curiosity & emotional.
+
+Contoh:
+
+“Banyak orang salah jurusan. Jangan sampai kamu jadi salah satunya.”
+
+CTA:
+
+Mulai Analisis
+Step 2 — Intro Journey
+
+Menampilkan:
+
+estimasi waktu
+progress system
+hasil yang akan didapat
+Step 3 — Quiz Experience
+
+User menjawab:
+
+50 pertanyaan behavior based
+1 pertanyaan per halaman/card
+Step 4 — AI Analysis
+
+System:
+
+scoring engine
+weighted category
+personality mapping
+AI summary generation
+Step 5 — Result Teaser
+
+Menampilkan:
+
+personality title
+top jurusan teaser
+emotional preview
+Step 6 — Premium Unlock
+
+User unlock:
+
+Premium PDF Report
+Step 7 — Final Result
+
+User mendapat:
+
+full report
+downloadable PDF
+shareable result card
+12. Question System
+Total Questions
+50 pertanyaan
+Question Style
+Hindari:
+pertanyaan formal
+“saya setuju / tidak setuju”
+gaya psikotes HR
+Gunakan:
+situational question
+behavior based question
+relatable conversation
+emotional curiosity
+13. Question Categories
+1. Daily Energy
+
+Hal yang membuat user hidup & excited.
+
+2. Natural Behavior
+
+Pola perilaku alami user.
+
+3. Future Lifestyle
+
+Lifestyle & kehidupan ideal.
+
+4. Work Style
+
+Cara user bekerja & menyelesaikan masalah.
+
+5. Curiosity & Interest
+
+Hal yang paling menarik perhatian user.
+
+6. Social & Communication
+
+Cara user berinteraksi dengan orang lain.
+
+7. Creative & Analytical Identity
+
+Dominasi pola pikir user.
+
+14. Answer System
+Jawaban menggunakan:
+visual selectable card.
+Bukan:
+
+1–5 setuju/tidak setuju.
+
+Tetapi:
+
+pilihan behavior nyata.
+
+Contoh:
+
+“Kalau punya waktu kosong 3 jam, kamu paling mungkin:”
+
+bikin sesuatu kreatif
+ngobrol sama orang
+belajar skill baru
+eksplor hal baru
+recharge santai
+15. Gamification System
+Features
+progress bar
+completion percentage
+animated transition
+smooth interaction
+achievement feel
+Goals
+
+Meningkatkan:
+
+retention
+completion rate
+engagement
+16. AI Analysis System
+System Flow
+
+17. Main Analysis Categories
+Core Categories
+creativity
+logic
+leadership
+communication
+exploration
+stability
+analytical thinking
+social intelligence
+18. AI Role
+
+AI digunakan untuk:
+
+membuat summary terasa personal
+membuat hasil lebih natural
+menghasilkan emotional explanation
+meningkatkan curiosity
+
+AI bukan penentu utama.
+
+Scoring system tetap menjadi core logic.
+
+19. Result Output
+1. Personality Identity
+
+Contoh:
+
+Creative Strategist
+Explorer Builder
+Visionary Thinker
+Analytical Creator
+2. Top Jurusan Match
+
+Menampilkan:
+
+top 5 jurusan
+persentase kecocokan
+alasan rekomendasi
+3. Future Career Direction
+
+Contoh:
+UI/UX → Product Designer → Creative Director
+
+4. Future Lifestyle Match
+
+Menjelaskan:
+
+pola kerja
+work environment
+tekanan kerja
+lifestyle compatibility
+5. Warning Area
+
+Contoh:
+
+“Kamu kurang cocok dengan pekerjaan repetitif & terlalu monoton.”
+
+20. Emotional Report Strategy
+Goal utama:
+
+User merasa:
+
+“Wah ini relate banget sama gue.”
+
+Bukan:
+
+“Ini cuma quiz random.”
+
+21. Premium PDF Report
+PDF Goal
+
+Modern, aesthetic, dan terasa premium.
+
+PDF Sections
+Section 1
+
+Personality Overview
+
+Section 2
+
+Strength & Weakness
+
+Section 3
+
+Top Jurusan Match
+
+Section 4
+
+Career Direction
+
+Section 5
+
+Future Lifestyle
+
+Section 6
+
+Warning Area
+
+Section 7
+
+Self Development Advice
+
+Section 8
+
+Skill Roadmap
+
+22. Viral System
+Shareable Result Card
+
+User bisa share:
+
+personality identity
+jurusan cocok
+aesthetic result card
+Goal
+
+Organic social virality.
+
+23. Monetization
+Main Revenue
+Pay Per Report
+Pricing Strategy
+Package	Price
+Basic Report	Rp19.000
+Premium Report	Rp49.000
+Expert Deep Report	Rp99.000
+24. Future Monetization
+konsultasi mentor
+scholarship guide
+webinar
+affiliate kampus
+career planning package
+25. MVP Scope
+Fokus:
+
+launch cepat & validasi market.
+
+MVP Features
+landing page
+question flow
+scoring engine
+AI summary
+PDF generator
+payment system
+result page
+Tidak wajib di MVP
+mobile app
+AI mentor
+dashboard kompleks
+social community
+26. Recommended Tech Stack
+Frontend
+
+Next.js
+
+Styling
+
+Tailwind + shadcn/ui
+
+Backend
+
+Supabase
+
+AI
+
+OpenAI API
+
+Hosting
+
+Vercel
+
+28. Marketing Strategy
+Main Platform
+TikTok
+Instagram Reels
+Content Direction
+Emotional Content
+“tanda kamu salah jurusan”
+“kenapa banyak mahasiswa nyesel?”
+“jurusan untuk overthinker”
+Curiosity Content
+“kerja yang cocok berdasarkan cara berpikirmu”
+“ternyata personality bisa menentukan jurusan”
+29. Biggest Product Strength
+
+Bukan AI.
+Bukan PDF.
+
+Tetapi:
+
+emotional self discovery experience.
+30. Biggest Risk
+
+Jika hasil terasa:
+
+generic
+random
+tidak relate
+
+Maka user tidak akan percaya.
+
+31. Most Important Thing
+Quality of Questions.
+
+Karena:
+pertanyaan bagus menghasilkan:
+
+data bagus
+emotional connection
+trust tinggi
+viral potential
+conversion tinggi
+32. Final Vision
+
+JuruScope ingin menjadi:
+
+platform yang membantu Gen Z memahami dirinya sebelum menentukan masa depan.
+
+FINAL PRODUCT FLOW
+1. Landing Page
+Goal:
+
+membangun curiosity & emotional trigger.
+
+Hero Section
+
+Headline:
+
+“Banyak orang salah jurusan.
+Jangan sampai kamu jadi salah satunya.”
+
+Subheadline:
+
+“Jawab 50 pertanyaan ringan dan temukan jurusan serta arah masa depan yang paling cocok buatmu.”
+
+CTA:
+
+Mulai Analisis
+2. Intro Page
+
+User melihat:
+
+estimasi waktu (5–7 menit)
+progress system
+apa yang akan didapat
+Result Preview
+
+Contoh:
+
+personality identity
+jurusan cocok
+future work style
+career direction
+3. User Identity Form
+User wajib isi:
+nama
+email
+usia
+kelas
+sekolah (optional)
+Kenapa email wajib?
+
+Karena:
+
+hasil dikirim email
+retargeting
+database bisnis
+future upsell
+viral loop
+4. Quiz Flow
+Total:
+50 pertanyaan
+UI Rules
+1 pertanyaan per halaman/card
+selectable answer card
+smooth transition
+progress bar
+no “setuju/tidak setuju”
+5. AI Analysis Engine
+
+Setelah selesai:
+system melakukan:
+
+weighted scoring
+personality mapping
+jurusan matching
+AI summary generation
+6. FREE RESULT PAGE
+
+INI BAGIAN PALING PENTING.
+
+Karena ini growth engine.
+
+User GRATIS tetap dapat:
+hasil utama.
+Free Result Includes
+1. Personality Identity
+
+Contoh:
+
+“Creative Strategist”
+2. Top 3 Jurusan
+
+Contoh:
+
+DKV
+Marketing
+Ilmu Komunikasi
+3. Short Personality Summary
+
+Contoh:
+
+“Kamu cenderung kreatif, suka eksplorasi ide baru, dan lebih berkembang di lingkungan fleksibel.”
+
+4. Basic Future Direction
+
+Contoh:
+
+“Kamu cocok di bidang yang menggabungkan kreativitas dan komunikasi.”
+
+Kenapa ini penting?
+
+Karena:
+
+user tetap puas walau gratis.
+
+Ini meningkatkan:
+
+trust
+shareability
+virality
+7. PREMIUM PAYWALL
+
+Setelah hasil gratis muncul:
+
+Copywriting:
+
+“Mau lihat analisis lengkap tentang dirimu, roadmap karir, warning area, dan simulasi masa depanmu?”
+
+CTA:
+
+Unlock Full Report
+8. PAYMENT FLOW
+Payment:
+QRIS
+Midtrans/Xendit
+instant payment
+Setelah bayar:
+status berubah:
+PAID
+9. PAYMENT VERIFICATION
+Ideal:
+otomatis via webhook.
+Flow:
+
+Payment Success
+↓
+Webhook Trigger
+↓
+Generate PDF
+↓
+Send Email
+↓
+Status Completed
+
+10. PREMIUM PDF REPORT
+Isi lengkap:
+personality breakdown
+top jurusan
+kenapa cocok
+warning area
+career roadmap
+work style
+lifestyle compatibility
+skill roadmap
+future direction
+11. EMAIL DELIVERY SYSTEM
+Setelah payment success:
+
+user otomatis dapat:
+
+PDF
+thank you email
+share CTA
+Email Subject:
+
+“Hasil Analisis JuruScope Kamu Sudah Siap 🚀”
+
+12. SHARE SYSTEM
+
+Setelah hasil keluar:
+user bisa:
+
+share personality card
+share jurusan cocok
+upload ke story
+Kenapa ini penting?
+
+Karena:
+
+produkmu punya potensi identity sharing.
+
+Mirip:
+
+Spotify Wrapped
+MBTI
+IQ test viral
+FINAL BUSINESS STRATEGY
+Produk utamanya bukan PDF.
+
+Tetapi:
+
+traffic + curiosity.
+Monetization Structure
+Gratis:
+hasil basic
+personality
+top jurusan
+Berbayar:
+deep emotional report
+roadmap
+detail analysis
+future direction
+Kenapa ini model yang bagus?
+
+Karena:
+
+user tidak merasa dipaksa bayar.
+
+Tetapi:
+
+penasaran upgrade.
+
+Dan curiosity adalah trigger conversion terbaik.
+
+OWNER DASHBOARD SYSTEM
+
+INI PENTING.
+
+Karena projectmu sebenarnya:
+
+data business.
+Dashboard Owner Features
+1. Total User
+total visitors
+total quiz completed
+total paid users
+2. Revenue Dashboard
+total revenue
+today revenue
+monthly revenue
+conversion rate
+3. Most Popular Personality
+
+Contoh:
+
+Creative Strategist → 32%
+Analytical Thinker → 18%
+
+Ini bisa jadi:
+
+konten marketing
+insight product
+4. Most Recommended Jurusan
+
+Melihat:
+
+jurusan paling sering muncul
+5. Payment Analytics
+pending
+paid
+failed
+6. User Database
+
+Berisi:
+
+nama
+email
+personality
+jurusan
+payment status
+7. Email Marketing Ready
+
+Karena semua user sudah masuk database.
+
+Bisa dipakai untuk:
+
+launching fitur baru
+upsell
+webinar
+affiliate
+REALISTIC TECH STACK
+
+Dengan skill vibe coding 7/10:
+ini sudah sangat realistis.
+
+Frontend
+
+Next.js
+
+UI
+Tailwind
+shadcn/ui
+Backend
+
+Supabase
+
+Karena:
+
+auth gampang
+database gampang
+realtime gampang
+Payment
+Midtrans
+Xendit
+AI
+
+OpenAI API
+
+Hanya untuk:
+
+summary
+emotional writing
+PDF generation
+PDF
+React PDF
+Puppeteer HTML to PDF
+Hosting
+
+Vercel
+
+FINAL MVP STRUCTURE
+WAJIB ADA
+landing page
+quiz flow
+scoring system
+free result
+premium unlock
+payment
+PDF generation
+email automation
+owner dashboard

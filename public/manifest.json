@@ -1,0 +1,21 @@
+{
+  "name": "JuruScope — Kenali dirimu sebelum menentukan masa depan",
+  "short_name": "JuruScope",
+  "description": "Platform AI self discovery untuk Gen Z. Temukan kepribadian, jurusan, dan arah masa depan yang paling cocok buatmu.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F4E9",
+  "theme_color": "#4B5320",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
